@@ -1,6 +1,6 @@
 {
-  "name": "UGC Quality Apps",
-  "short_name": "UGC Quality",
+  "name": "UGC Non-conformity Report Request",
+  "short_name": "UGC Reports",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
