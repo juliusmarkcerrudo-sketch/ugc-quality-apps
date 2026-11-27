@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#d32f2f" />
+  <title>UGC Quality Apps</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/png" href="./CCR pic.png" />
+  <link rel="apple-touch-icon" href="./CCR pic.png" />
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 24px;
+      background-color: #f7f7f7;
+      color: #222222;
+    }
+
+    .app-icon {
+      width: 104px;
+      height: 104px;
+      border-radius: 22px;
+      object-fit: cover;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 320px;
+      margin-top: 6px;
+    }
+
+    .nav-btn {
+      padding: 14px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      background-color: #d32f2f;
+      color: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(211, 47, 47, 0.25);
+      transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .nav-btn:hover {
+      background-color: #b71c1c;
+    }
+
+    .nav-btn:active {
+      transform: scale(0.98);
+    }
+
+    .install-btn {
+      padding: 13px 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border: 2px solid #d32f2f;
+      border-radius: 12px;
+      background-color: #ffffff;
+      color: #d32f2f;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+    }
+
+    .install-btn:hover {
+      background-color: #fff5f5;
+    }
+
+    .install-btn:active {
+      transform: scale(0.98);
+    }
+
+    .status-note {
+      font-size: 0.8rem;
+      color: #666666;
+      text-align: center;
+      min-height: 18px;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <img src="./CCR pic.png" alt="UGC Quality Apps Icon" class="app-icon" />
+  <h1>UGC Quality Apps</h1>
+
+  <div class="btn-group">
+    <button class="nav-btn" type="button" onclick="window.location.href='https://script.google.com/a/macros/ugc.ph/s/AKfycbxjNDp0IXx9jwNLIqN6p-BfstRSvCtYS0nDM-kAQGqFtm-VU9jRUyJ5nTWt6xYJ2RNW/exec'">CCR</button>
+    <button class="nav-btn" type="button" onclick="window.location.href='https://script.google.com/a/macros/ugc.ph/s/AKfycbxbe6N4gWEVJMpw9kouqCzX3skpfvzHF8r_wbUr-2rjA37XjGjsy4J5y9t4vfljNWlJ/exec'">NCCAR</button>
+    <button id="installBtn" class="install-btn" type="button">Install App</button>
+  </div>
+
+  <p id="statusNote" class="status-note"></p>
+
+  <script>
+    let deferredPrompt = null;
+    const installBtn = document.getElementById('installBtn');
+    const statusNote = document.getElementById('statusNote');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          statusNote.textContent = 'App installation started.';
+        }
+        deferredPrompt = null;
+      } else {
+        statusNote.textContent = 'Chrome/Android: Menu (⋮) > Install app. Safari/iOS: Share > Add to Home Screen.';
+      }
+    });
+
+    window.addEventListener('appinstalled', () => {
+      deferredPrompt = null;
+      statusNote.textContent = 'App installed.';
+    });
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch((err) => {
+          console.error('Service worker registration failed:', err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
